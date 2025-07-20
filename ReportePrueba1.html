@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Reportes</title>
+    <!-- Incluye Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Fondo gris claro */
+        }
+        /* Estilos para la impresión */
+        @media print {
+            body * {
+                visibility: hidden; /* Oculta todo por defecto al imprimir */
+            }
+            #report-container, #report-container * {
+                visibility: visible; /* Hace visible solo el contenedor del reporte */
+            }
+            #report-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20mm; /* Margen para impresión */
+                box-sizing: border-box;
+                background-color: white;
+            }
+            .no-print {
+                display: none !important; /* Oculta elementos específicos al imprimir */
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div id="app-container" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl">
+        <!-- Formulario de Cuestionario -->
+        <div id="form-section">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Cuestionario de Reportes</h1>
+            <form id="report-form" class="space-y-6">
+                <!-- Campo: Nombre del alumno -->
+                <div>
+                    <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1">Nombre del alumno:</label>
+                    <input type="text" id="studentName" name="studentName" required
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+
+                <!-- Campo: Grado del alumno -->
+                <div>
+                    <label for="studentGrade" class="block text-sm font-medium text-gray-700 mb-1">Grado del alumno:</label>
+                    <select id="studentGrade" name="studentGrade" required
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Selecciona un grado</option>
+                        <option value="1er Grado">1er Grado</option>
+                        <option value="2do Grado">2do Grado</option>
+                        <option value="3er Grado">3er Grado</option>
+                        <option value="4to Grado">4to Grado</option>
+                        <option value="5to Grado">5to Grado</option>
+                        <option value="6to Grado">6to Grado</option>
+                    </select>
+                </div>
+
+                <!-- Campo: Asignatura -->
+                <div>
+                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Asignatura:</label>
+                    <input type="text" id="subject" name="subject" required
+                           class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+
+                <!-- Campo: Tipo de reporte -->
+                <div>
+                    <label for="reportType" class="block text-sm font-medium text-gray-700 mb-1">Tipo de reporte:</label>
+                    <select id="reportType" name="reportType" required
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Conducta">Conducta</option>
+                        <option value="Rendimiento Académico">Rendimiento Académico</option>
+                        <option value="Asistencia">Asistencia</option>
+                        <option value="Incidente">Incidente</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <!-- Campo: Descripción del reporte -->
+                <div>
+                    <label for="reportDescription" class="block text-sm font-medium text-gray-700 mb-1">Descripción del reporte:</label>
+                    <textarea id="reportDescription" name="reportDescription" rows="5" required
+                              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                    Generar Reporte
+                </button>
+            </form>
+        </div>
+
+        <!-- Sección del Reporte Generado (Inicialmente oculta) -->
+        <div id="report-section" class="hidden">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Reporte Generado</h1>
+            <div id="report-container" class="border border-gray-200 p-6 rounded-md bg-white shadow-inner">
+                <!-- El contenido del reporte se insertará aquí dinámicamente -->
+            </div>
+            <div class="mt-8 flex justify-center space-x-4 no-print">
+                <button id="print-report-btn"
+                        class="flex items-center py-3 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m0 0v-4a2 2 0 012-2h4a2 2 0 012 2v4m0 0h-4"></path></svg>
+                    Imprimir Reporte (o Guardar como PDF)
+                </button>
+                <button id="new-report-btn"
+                        class="flex items-center py-3 px-6 border border-gray-300 rounded-md shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    Nuevo Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportForm = document.getElementById('report-form');
+            const formSection = document.getElementById('form-section');
+            const reportSection = document.getElementById('report-section');
+            const reportContainer = document.getElementById('report-container');
+            const printReportBtn = document.getElementById('print-report-btn');
+            const newReportBtn = document.getElementById('new-report-btn');
+
+            // Maneja el envío del formulario
+            reportForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Evita que la página se recargue
+
+                // Recopila los datos del formulario
+                const studentName = document.getElementById('studentName').value;
+                const studentGrade = document.getElementById('studentGrade').value;
+                const subject = document.getElementById('subject').value;
+                const reportType = document.getElementById('reportType').value;
+                const reportDescription = document.getElementById('reportDescription').value;
+                const currentDate = new Date().toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                // Genera el contenido HTML del reporte
+                reportContainer.innerHTML = `
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">Reporte de Alumno</h2>
+                        <p class="text-gray-600">Fecha de Emisión: ${currentDate}</p>
+                    </div>
+                    <div class="space-y-4 text-gray-800">
+                        <p><strong>Nombre del Alumno:</strong> ${studentName}</p>
+                        <p><strong>Grado del Alumno:</strong> ${studentGrade}</p>
+                        <p><strong>Asignatura:</strong> ${subject}</p>
+                        <p><strong>Tipo de Reporte:</strong> ${reportType}</p>
+                        <div>
+                            <p class="font-semibold mb-2">Descripción del Reporte:</p>
+                            <div class="bg-gray-50 p-4 rounded-md border border-gray-200 whitespace-pre-wrap">
+                                ${reportDescription}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Muestra la sección del reporte y oculta el formulario
+                formSection.classList.add('hidden');
+                reportSection.classList.remove('hidden');
+            });
+
+            // Maneja el botón de imprimir
+            printReportBtn.addEventListener('click', () => {
+                window.print(); // Abre el diálogo de impresión del navegador
+            });
+
+            // Maneja el botón de nuevo reporte
+            newReportBtn.addEventListener('click', () => {
+                reportForm.reset(); // Limpia el formulario
+                formSection.classList.remove('hidden'); // Muestra el formulario
+                reportSection.classList.add('hidden'); // Oculta la sección del reporte
+                reportContainer.innerHTML = ''; // Limpia el contenido del reporte
+            });
+        });
+    </script>
+</body>
+</html>
